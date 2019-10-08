@@ -7,6 +7,7 @@
 using namespace std;
 //1 - ошибка
 //2 - не готова функция
+//по фамилиям замечательных людей, ключ поиска - первые три буквы фамилии
 struct record {
 	char author[12];
 	char title[32];
@@ -29,11 +30,54 @@ void readDatabase(fstream& file, vector<record>& vector) {
 	}
 }
 
-void QuickSort(vector<record*>& indexArray, vector<record*>& recordArray) {
-	int left = 0;
-	int right = indexArray.size() - 1;
-	int pivot;
-}
+void QuickSort(vector<record*>& indexArray, int left, int right) {
+	int i, j;
+	char* x;
+	record* temp;
+
+	i = left; j = right;
+	x = indexArray[(left + right) / 2]->title;
+
+	do {
+		while ((strcmp(indexArray[i]->title, x) < 0) && (i < right)) {
+			i++;
+		}
+		while ((strcmp(indexArray[j]->title, x) > 0) && (j > left)) {
+			j--;
+		}
+		if (i <= j) {
+			temp = indexArray[i];
+			indexArray[i] = indexArray[j];
+			indexArray[j] = temp;
+		}
+	} while (i <= j);
+
+	if (left < j) {
+		QuickSort(indexArray, left, j);
+	}
+	if (i < right) {
+		QuickSort(indexArray, i, right);
+	}
+	/*
+	record tmp;
+	do {
+		while (indexArray[i] < x) {
+			i++;
+		}
+		while (indexArray[i] > x) {
+			j--;
+		}
+		if (i <= j) {
+			tmp = indexArray[i];
+			indexArray[i] = indexArray[j];
+			indexArray[j] = tmp;
+		}
+		i++;
+		j--;
+	} while (i <= j);
+
+	if(i < )*/
+} 
 
 void printDatabase(vector<record*>& index) {
 	cout << " Out: \n1) One note\n2) Twenty notes\n";
@@ -43,7 +87,6 @@ void printDatabase(vector<record*>& index) {
 	int counter = 1;
 	for (int i = 0; i < index.size(); i++) {
 		if (choice == 1) {
-			//exit(2);
 			while (_kbhit()) {
 				if (!_getch()) {
 					continue;
@@ -99,6 +142,8 @@ int main()
 	for (int i = 0; i < indexArray.size(); i++) {
 		indexArray[i] = &recordArray[i];
 	}
+	printDatabase(indexArray);
+	QuickSort(indexArray, 0, indexArray.size() - 1);
 	printDatabase(indexArray);
 	return 0;
 }
