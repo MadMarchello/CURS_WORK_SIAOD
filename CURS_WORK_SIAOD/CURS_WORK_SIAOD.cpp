@@ -28,14 +28,6 @@ void readDatabase(fstream& file, vector<record>& vector) {
 		file.read((char*)& input, sizeof(input));
 	}
 }
-void keyboardPlay(int choice) {
-	/*char stop;
-	while (true) {
-		stop = getch();
-		if (stop == 32) {
-		}
-	}*/
-}
 /*
 void QuickSort(vector<record*>& indexArray, vector<record*>& recordArray) {
 	int left = 0;
@@ -52,16 +44,17 @@ void printDatabase(vector<record*>& index) {
 	int choice = stoi(inputStr);
 	int counter = 1;
 	for (int i = 0; i < index.size(); i++) {
-		cout << i + 1 << ". "
-			<< index[i]->author
-			<< index[i]->title
-			<< index[i]->publisher
-			<< index[i]->year
-			<< index[i]->num_of_page
-			<< endl;
 		if (choice == 1) {
-			//keyboardPlay();
-			exit(2)
+			//exit(2);
+			while (_kbhit()) {
+				if (!_getch()) {
+					continue;
+				}
+				else if(_getch() == 32)  {
+					continue;
+				}
+			}
+
 		}
 		else {
 			if (counter < 20) {
@@ -80,13 +73,20 @@ void printDatabase(vector<record*>& index) {
 				}
 			}
 		}
+		cout << i + 1 << ". "
+			<< index[i]->author
+			<< index[i]->title
+			<< index[i]->publisher
+			<< index[i]->year
+			<< index[i]->num_of_page
+			<< endl;
 	}
 }
 int main()
 {
 	fstream file;
-	string databaseName;
-	getline(cin, databaseName);
+	const string databaseName = "D:\\testBase1.dat";
+	//getline(cin, databaseName);
 	try {
 		openDatabase(databaseName, file);
 	}
