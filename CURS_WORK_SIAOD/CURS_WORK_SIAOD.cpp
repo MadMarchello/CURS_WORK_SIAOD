@@ -28,15 +28,13 @@ void readDatabase(fstream& file, vector<record>& vector) {
 		file.read((char*)& input, sizeof(input));
 	}
 }
-/*
+
 void QuickSort(vector<record*>& indexArray, vector<record*>& recordArray) {
 	int left = 0;
 	int right = indexArray.size() - 1;
 	int pivot;
-
-
 }
-*/
+
 void printDatabase(vector<record*>& index) {
 	cout << " Out: \n1) One note\n2) Twenty notes\n";
 	string inputStr;
