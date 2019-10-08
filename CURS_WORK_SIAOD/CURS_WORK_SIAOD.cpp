@@ -31,18 +31,20 @@ void readDatabase(fstream& file, vector<record>& vector) {
 }
 
 void QuickSort(vector<record*>& indexArray, int left, int right) {
-	int i, j;
-	char* x;
+/*	int i, j;
+//	char* x;
+	short int x;
+
 	record* temp;
 
 	i = left; j = right;
-	x = indexArray[(left + right) / 2]->title;
+	x = indexArray[(left + right) / 2]->year;
 
 	do {
-		while ((strcmp(indexArray[i]->title, x) < 0) && (i < right)) {
+		while ((indexArray[i]->year < x) && (i < right)) {
 			i++;
 		}
-		while ((strcmp(indexArray[j]->title, x) > 0) && (j > left)) {
+		while ((indexArray[j]->year > x) && (j > left)) {
 			j--;
 		}
 		if (i <= j) {
@@ -57,28 +59,56 @@ void QuickSort(vector<record*>& indexArray, int left, int right) {
 	}
 	if (i < right) {
 		QuickSort(indexArray, i, right);
+	}*/
+	/*int l = left;
+	int r = right;
+
+	int piv = indexArray[(l + r) / 2]->year;
+	
+	while (l <= r) {
+		while(indexArray[l]->year)
+	}*/
+}
+int Compare(record record1, record record2) {
+	int SurnameBeginRecord1 = 0;
+	int SurnameBeginRecord2 = 0;
+	//
+	while (record1.title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
 	}
-	/*
-	record tmp;
-	do {
-		while (indexArray[i] < x) {
-			i++;
-		}
-		while (indexArray[i] > x) {
-			j--;
-		}
-		if (i <= j) {
-			tmp = indexArray[i];
-			indexArray[i] = indexArray[j];
-			indexArray[j] = tmp;
-		}
-		i++;
-		j--;
-	} while (i <= j);
-
-	if(i < )*/
-} 
-
+	while (record1.title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
+	}
+	//
+	while (record2.title[SurnameBeginRecord2] != ' ') {
+		SurnameBeginRecord2++;
+	}
+	while (record2.title[SurnameBeginRecord2] != ' ') {
+		SurnameBeginRecord2++;
+	}
+	//
+	if (record1.title[SurnameBeginRecord1] > record2.title[SurnameBeginRecord2]) {
+		return 1;
+	} 
+	else if (record1.title[SurnameBeginRecord1] < record2.title[SurnameBeginRecord2]) {
+		return -1;
+	} 
+	else if (record1.title[SurnameBeginRecord1 + 1] > record2.title[SurnameBeginRecord2]) {
+		return 1;
+	} 
+	else if (record1.title[SurnameBeginRecord1 + 1] < record2.title[SurnameBeginRecord2]) {
+		return -1;
+	} 
+	else if (record1.title[SurnameBeginRecord1 + 2] > record2.title[SurnameBeginRecord2]) {
+		return 1;
+	} 
+	else if (record1.title[SurnameBeginRecord1 + 2] < record2.title[SurnameBeginRecord2]) {
+		return -1;
+	}
+	else {
+		return 0;
+	}
+}
 void printDatabase(vector<record*>& index) {
 	cout << " Out: \n1) One note\n2) Twenty notes\n";
 	string inputStr;
