@@ -20,6 +20,14 @@ void openDatabase(string filename, fstream& file) {
 		throw runtime_error("File " + filename + " does not exist");
 	}
 }
+void readDatabase(fstream& file, vector<record>& vector) {
+	record input;
+	file.read((char*)& input, sizeof(input));
+	while (!file.eof()) {
+		vector.push_back(input);
+		file.read((char*)& input, sizeof(input));
+	}
+}
 
 int main()
 {
