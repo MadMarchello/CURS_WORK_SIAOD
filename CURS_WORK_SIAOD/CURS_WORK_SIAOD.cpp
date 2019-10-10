@@ -4,9 +4,12 @@
 #include <vector>
 #include <string>
 #include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 //1 - ошибка
 //2 - не готова функция
+//по фамилиям замечательных людей, ключ поиска - первые три буквы фамилии
 struct record {
 	char author[12];
 	char title[32];
@@ -28,24 +31,100 @@ void readDatabase(fstream& file, vector<record>& vector) {
 		file.read((char*)& input, sizeof(input));
 	}
 }
-/*
-void QuickSort(vector<record*>& indexArray, vector<record*>& recordArray) {
-	int left = 0;
-	int right = indexArray.size() - 1;
-	int pivot;
+int Compare(record* record1, record* record2);
 
+void qs_struct(vector<record*>& indexArray, int left, int right)
+{
+	register int i, j;
+	record* x;
+	record* temp;
 
+	i = left; j = right;
+	x = indexArray[(left + right) / 2];
+	do {
+		while ((Compare(indexArray[i], x) < 0) && (i < right)) i++;
+		while ((Compare(indexArray[j], x) > 0) && (j > left)) j--;
+		if (i <= j) {
+			temp = indexArray[i];
+			indexArray[i] = indexArray[j];
+			indexArray[j] = temp;
+			i++; j--;
+		}
+	} while (i <= j);
+
+	if (left < j) qs_struct(indexArray, left, j);
+	if (i < right) qs_struct(indexArray, i, right);
 }
-*/
-void printDatabase(vector<record*>& index) {
+int Compare(record* record1, record* record2) {
+	int SurnameBeginRecord1 = 0;
+	int SurnameBeginRecord2 = 0;
+	//
+	while (record1->title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
+	}
+	SurnameBeginRecord1++;
+	while (record1->title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
+	}
+	//
+	SurnameBeginRecord1++;
+	while (record2->title[SurnameBeginRecord2] != ' ') {
+		SurnameBeginRecord2++;
+	}
+	SurnameBeginRecord2++;
+	while (record2->title[SurnameBeginRecord2] != ' ') {
+		SurnameBeginRecord2++;
+	}
+	SurnameBeginRecord2++;
+	//
+	/*cout << endl << SurnameBeginRecord1 << " " << SurnameBeginRecord2 << endl;
+	cout << record1->title[SurnameBeginRecord1] << " " << record2->title[SurnameBeginRecord2] << endl;
+	cout << record1->title[SurnameBeginRecord1 + 1] << " " << record2->title[SurnameBeginRecord2 + 1] << endl;
+	cout << record1->title[SurnameBeginRecord1 + 2] << " " << record2->title[SurnameBeginRecord2 + 2] << endl;*/
+	//1
+	if (record1->title[SurnameBeginRecord1] > record2->title[SurnameBeginRecord2]) {
+		//cout << record1->title[SurnameBeginRecord1] << " > " << record2->title[SurnameBeginRecord2] << endl;
+		return 1;
+	} 
+	else if (record1->title[SurnameBeginRecord1] < record2->title[SurnameBeginRecord2]) {
+		//cout << record1->title[SurnameBeginRecord1] << " > " << record2->title[SurnameBeginRecord2] << endl;
+		return -1;
+	} 
+	//2
+	if (record1->title[SurnameBeginRecord1 + 1] > record2->title[SurnameBeginRecord2 + 1]) {
+		//cout << record1->title[SurnameBeginRecord1 + 1] << " > " << record2->title[SurnameBeginRecord2 + 1] << endl;
+		return 1;
+	} 
+	else if (record1->title[SurnameBeginRecord1 + 1] < record2->title[SurnameBeginRecord2 + 1]) {
+		//cout << record1->title[SurnameBeginRecord1 + 1] << "<" << record2->title[SurnameBeginRecord2 + 1] << endl;
+		return -1;
+	} 
+	//3
+	else if (record1->title[SurnameBeginRecord1 + 2] > record2->title[SurnameBeginRecord2 + 2]) {
+		//cout << record1->title[SurnameBeginRecord1 + 2] << " > " << record2->title[SurnameBeginRecord2 + 2] << endl;
+		return 1;
+	} 
+	else if (record1->title[SurnameBeginRecord1 + 2] < record2->title[SurnameBeginRecord2 + 2]) {
+		//cout << record1->title[SurnameBeginRecord1 + 2] << " < " << record2->title[SurnameBeginRecord2 + 2] << endl;
+		return -1;
+	}
+	else {
+		/*cout << record1->title[SurnameBeginRecord1] << " = " << record2->title[SurnameBeginRecord2] << endl;
+		cout << record1->title[SurnameBeginRecord1 + 1] << " = " << record2->title[SurnameBeginRecord2 + 1] << endl;
+		cout << record1->title[SurnameBeginRecord1 + 2] << " = " << record2->title[SurnameBeginRecord2 + 2] << endl;*/
+		return 0;
+	}
+}
+void printDatabase(vector<record*> index) {
+
 	cout << " Out: \n1) One note\n2) Twenty notes\n";
+	system("CLS");
 	string inputStr;
 	getline(cin, inputStr);
 	int choice = stoi(inputStr);
 	int counter = 1;
 	for (int i = 0; i < index.size(); i++) {
 		if (choice == 1) {
-			//exit(2);
 			while (_kbhit()) {
 				if (!_getch()) {
 					continue;
@@ -73,12 +152,12 @@ void printDatabase(vector<record*>& index) {
 				}
 			}
 		}
-		cout << i + 1 << ". "
-			<< index[i]->author
-			<< index[i]->title
-			<< index[i]->publisher
-			<< index[i]->year
-			<< index[i]->num_of_page
+		cout << i + 1 << ".| "
+			<< index[i]->author << "  |  "
+			<< index[i]->title << "  |  "
+			<< index[i]->publisher << "  |  "
+			<< index[i]->year << "  |  "
+			<< index[i]->num_of_page << "  |  "
 			<< endl;
 	}
 }
@@ -101,6 +180,8 @@ int main()
 	for (int i = 0; i < indexArray.size(); i++) {
 		indexArray[i] = &recordArray[i];
 	}
+	printDatabase(indexArray);
+	qs_struct(indexArray, 0, indexArray.size() - 1);
 	printDatabase(indexArray);
 	return 0;
 }
