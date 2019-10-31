@@ -13,10 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\src">
+      <UniqueIdentifier>{def58f76-eec0-49eb-9ed5-071b8dd95a77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CURS_WORK_SIAOD.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\src</Filter>
     </ClCompile>
+    <ClCompile Include="function.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="function.h">
+      <Filter>Исходные файлы\src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
