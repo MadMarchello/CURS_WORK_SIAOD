@@ -14,7 +14,10 @@ void ReadDatabase(std::fstream & file, std::vector<record> & vector) {
 		file.read((char*)& input, sizeof(input));
 	}
 }
-
+void BinarySearch(std::vector<record*>& indexArray, int key) {
+	int arr_size = indexArray.size();
+	
+}
 void QuickSortStruct(std::vector<record*> & indexArray, int left, int right)
 {
 	register int i, j;
@@ -38,51 +41,72 @@ void QuickSortStruct(std::vector<record*> & indexArray, int left, int right)
 	if (i < right) QuickSortStruct(indexArray, i, right);
 }
 int Compare(record * record1, record * record2) {
-	int SurnameBeginRecord1 = 0;
-	int SurnameBeginRecord2 = 0;
-	//цикл обработки первого слова
-	while (record1->title[SurnameBeginRecord1] != ' ') {
-		SurnameBeginRecord1++;
+	int surnameBeginRecord1 = 0;
+	int surnameBeginRecord2 = 0;
+	
+	/*ѕ≈–¬јя «јѕ»—№*/
+	while (record1->title[surnameBeginRecord1] != ' ') {	//цикл обработки первого слова первой записи
+		surnameBeginRecord1++;
 	}
-	SurnameBeginRecord1++;
-	while (record1->title[SurnameBeginRecord1] != ' ') {
-		SurnameBeginRecord1++;
+	surnameBeginRecord1++;
+	while (record1->title[surnameBeginRecord1] != ' ') {	//цикл обработки второго слова первой записи 
+		surnameBeginRecord1++;
+	};
+	surnameBeginRecord1++;
+
+	/*¬“ќ–јя «јѕ»—№ «јѕ»—№*/
+	surnameBeginRecord2 += 2;
+	while (record2->title[surnameBeginRecord2] != ' ') {   // цикл обработки первого слова второй записи 
+		surnameBeginRecord2++;
 	}
-	//цикл обработки второго слова
-	SurnameBeginRecord1++;
-	while (record2->title[SurnameBeginRecord2] != ' ') {
-		SurnameBeginRecord2++;
+	surnameBeginRecord2++;
+	while (record2->title[surnameBeginRecord2] != ' ') { //цикл обрабоки второго слова второй записи
+		surnameBeginRecord2++;
 	}
-	SurnameBeginRecord2++;
-	while (record2->title[SurnameBeginRecord2] != ' ') {
-		SurnameBeginRecord2++;
-	}
-	SurnameBeginRecord2++;
-	//сравнивание первой буквы
+	surnameBeginRecord2++;
+
+	char* titleBuffSurnameRecord1;//буфер
+	char* titleBuffSurnameRecord2;
+
+	titleBuffSurnameRecord1 = new char[32];
+	titleBuffSurnameRecord2 = new char[32];
+	/*-------«јѕќЋЌ≈Ќ»≈ ѕ≈–¬ќ√ќ Ѕ”‘≈–ј-------*/
 	for (size_t i = 0; i < 32; i++) {
-		if (record1->title[SurnameBeginRecord1 + i] > record2->title[SurnameBeginRecord2 + i]) {
-			return 1;
-		}
-		else if (record1->title[SurnameBeginRecord1 + i] < record2->title[SurnameBeginRecord2] + i) {
-			return -1;
-		}
+		titleBuffSurnameRecord1[i] = ' ';
 	}
-	/*//сравнивание второй буквы
-	if (record1->title[SurnameBeginRecord1 + 1] > record2->title[SurnameBeginRecord2 + 1]) {
-		return 1;
+	for (size_t i = 0; i < 32 - surnameBeginRecord1; i++) {
+		titleBuffSurnameRecord1[i] = record1->title[surnameBeginRecord1 + i];
 	}
-	else if (record1->title[SurnameBeginRecord1 + 1] < record2->title[SurnameBeginRecord2 + 1]) {
+	/*-------«јѕќЋЌ≈Ќ»≈ ¬“ќ–ќ√ќ Ѕ”‘≈–ј-------*/
+	for (size_t i = 0; i < 32; i++) {
+		titleBuffSurnameRecord2[i] = ' ';
+	}
+	for (size_t i = 0; i < 32 - surnameBeginRecord2; i++) {
+		titleBuffSurnameRecord2[i] = record2->title[surnameBeginRecord2 + i];
+		//std::cout << titleBuffSurnameRecord2[i] << "-";
+	}
+	//std::cout << "___";
+	for (size_t i = 0; i < 32 - surnameBeginRecord2; i++) {
+		//std::cout << record2->title[surnameBeginRecord2 + i] << "-";
+	}
+	
+	if (strcmp(titleBuffSurnameRecord1, titleBuffSurnameRecord2) < 0) {//str1 < str2
+		//std::cout << titleBuffSurnameRecord1 << "<" << titleBuffSurnameRecord2 << std::endl;
+		delete[] titleBuffSurnameRecord1;
+		delete[] titleBuffSurnameRecord2;
 		return -1;
 	}
-	//сравнивание третьей буквы
-	else if (record1->title[SurnameBeginRecord1 + 2] > record2->title[SurnameBeginRecord2 + 2]) {
-		return 1;
-	}
-	else if (record1->title[SurnameBeginRecord1 + 2] < record2->title[SurnameBeginRecord2 + 2]) {
-		return -1;
-	}*/
-	else {
+	if (strcmp(titleBuffSurnameRecord1, titleBuffSurnameRecord2) == 0) {//str1 == str2
+		//std::cout << titleBuffSurnameRecord1 << "==" << titleBuffSurnameRecord2 << std::endl;
+		delete[] titleBuffSurnameRecord1;
+		delete[] titleBuffSurnameRecord2;
 		return 0;
+	}
+	if (strcmp(titleBuffSurnameRecord1, titleBuffSurnameRecord2) > 0) {//str1 > str2
+		//std::cout << titleBuffSurnameRecord1 << "<" << titleBuffSurnameRecord2 << std::endl;
+		delete[] titleBuffSurnameRecord1;
+		delete[] titleBuffSurnameRecord2;
+		return 1;
 	}
 }
 void PrintDatabase(std::vector<record*> index) {
@@ -130,3 +154,26 @@ void PrintDatabase(std::vector<record*> index) {
 		}
 	}
 }
+/*
+void Search_Binary(std::vector<record*> indexArray, char* key)
+{
+	key = new char[32];
+	int midd = 0;
+	int left = 0;
+	int right = indexArray.size() - 1;
+
+	while (true)
+	{
+		midd = (left + right) / 2;
+
+		if (Compare()       // если искомое меньше значени€ в €чейке
+			right = midd - 1;      // смещаем правую границу поиска
+		else if (key > arr[midd])  // если искомое больше значени€ в €чейке
+			left = midd + 1;    // смещаем левую границу поиска
+		else                       // иначе (значени€ равны)
+			std::cout << "Succsefull\n";           // функци€ возвращает индекс €чейки
+
+		if (left > right)          // если границы сомкнулись 
+			std::cout << "nope\n";
+	}
+}*/
