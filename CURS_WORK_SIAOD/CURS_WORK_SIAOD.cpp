@@ -35,12 +35,17 @@ int main()
 	for (int i = 0; i < indexArray.size(); i++) {
 		indexArray[i] = &recordArray[i];
 	}
-	//PrintDatabase(indexArray);
+
 	QuickSortStruct(indexArray, 0, indexArray.size() - 1);
 	PrintDatabase(indexArray);
-
-	std::string answer;
-	cin >> answer;
-	cout << answer;
+	
+	char* key = new char[3];
+	cin >> key;
+	int min = 0;
+	int max = indexArray.size() - 1;
+	
+	while (min != max) {
+		BinSearch(indexArray, key, min, max);
+	}
 	return 0;
 }

@@ -6,6 +6,7 @@ void OpenDatabase(std::string filename, std::fstream& file) {
 		throw std::runtime_error("File " + filename + " does not exist");
 	}
 }
+
 void ReadDatabase(std::fstream & file, std::vector<record> & vector) {
 	record input;
 	file.read((char*)& input, sizeof(input));
@@ -13,10 +14,6 @@ void ReadDatabase(std::fstream & file, std::vector<record> & vector) {
 		vector.push_back(input);
 		file.read((char*)& input, sizeof(input));
 	}
-}
-void BinarySearch(std::vector<record*>& indexArray, int key) {
-	int arr_size = indexArray.size();
-	
 }
 void QuickSortStruct(std::vector<record*> & indexArray, int left, int right)
 {
@@ -43,7 +40,7 @@ void QuickSortStruct(std::vector<record*> & indexArray, int left, int right)
 int Compare(record * record1, record * record2) {
 	int surnameBeginRecord1 = 0;
 	int surnameBeginRecord2 = 0;
-	
+
 	/*ѕ≈–¬јя «јѕ»—№*/
 	while (record1->title[surnameBeginRecord1] != ' ') {	//цикл обработки первого слова первой записи
 		surnameBeginRecord1++;
@@ -55,7 +52,6 @@ int Compare(record * record1, record * record2) {
 	surnameBeginRecord1++;
 
 	/*¬“ќ–јя «јѕ»—№ «јѕ»—№*/
-	surnameBeginRecord2 += 2;
 	while (record2->title[surnameBeginRecord2] != ' ') {   // цикл обработки первого слова второй записи 
 		surnameBeginRecord2++;
 	}
@@ -89,7 +85,7 @@ int Compare(record * record1, record * record2) {
 	for (size_t i = 0; i < 32 - surnameBeginRecord2; i++) {
 		//std::cout << record2->title[surnameBeginRecord2 + i] << "-";
 	}
-	
+
 	if (strcmp(titleBuffSurnameRecord1, titleBuffSurnameRecord2) < 0) {//str1 < str2
 		//std::cout << titleBuffSurnameRecord1 << "<" << titleBuffSurnameRecord2 << std::endl;
 		delete[] titleBuffSurnameRecord1;
@@ -154,26 +150,69 @@ void PrintDatabase(std::vector<record*> index) {
 		}
 	}
 }
-/*
-void Search_Binary(std::vector<record*> indexArray, char* key)
-{
-	key = new char[32];
-	int midd = 0;
-	int left = 0;
-	int right = indexArray.size() - 1;
-
-	while (true)
-	{
-		midd = (left + right) / 2;
-
-		if (Compare()       // если искомое меньше значени€ в €чейке
-			right = midd - 1;      // смещаем правую границу поиска
-		else if (key > arr[midd])  // если искомое больше значени€ в €чейке
-			left = midd + 1;    // смещаем левую границу поиска
-		else                       // иначе (значени€ равны)
-			std::cout << "Succsefull\n";           // функци€ возвращает индекс €чейки
-
-		if (left > right)          // если границы сомкнулись 
-			std::cout << "nope\n";
+int BinCompare(char* key, char title[32]) {
+	int SurnameBeginRecord1 = 0;
+	int SurnameBeginRecord2 = 0;
+	//ѕерва€ cлово 
+	while (title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
 	}
-}*/
+	SurnameBeginRecord1++;
+	//¬торое слово
+	while (title[SurnameBeginRecord1] != ' ') {
+		SurnameBeginRecord1++;
+	}
+	SurnameBeginRecord1++;
+
+	if (title[SurnameBeginRecord1] > key[0]) {
+		return 1;
+	}
+	else if (title[SurnameBeginRecord1] < key[0]) {
+		return -1;
+	}
+	else if (title[SurnameBeginRecord1 + 1] > key[1]) {
+		return 1;
+	}
+	else if (title[SurnameBeginRecord1 + 1] < key[1]) {
+		return -1;
+	}
+	else if (title[SurnameBeginRecord1 + 2] > key[2]) {
+		return 1;
+	}
+	else if (title[SurnameBeginRecord1 + 2] < key[2]) {
+		return -1;
+	}
+	else {
+		return 0;
+	}
+
+}
+
+int BinSearch(std::vector<record*> & index, char* key, int& left, int right) {
+	int middle;
+	while (left <= right) {
+		middle = left + (right - left) / 2;
+
+		if (BinCompare(key, index[middle]->title) == 0) {
+		/*	for (int i = 0; i < exception.size(); i++) {
+				if (exception[i] == middle) {
+				}
+				else {
+					exception.push_back(i);//добавили элемент в исключение
+					return middle;// вернули
+				}
+			}
+			*/
+			left = middle;
+			return middle;
+		}
+
+		if (BinCompare(key, index[middle]->title) < 0) {
+			left = middle + 1;//двигает левую часть вправо
+		}
+		else {
+			right = middle - 1;//двигает правую часть влево
+		}
+	}
+	return -1;// не найден
+}
