@@ -1,4 +1,6 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
 #include <ostream>
 #include <fstream>
@@ -13,9 +15,12 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iomanip>
 #define SIZE 4000
 #define MAX 2
 #define MIN 1
+const int size_code = 256;
+const std::string databaseName = "D:\\testBase1.dat";
 
 struct record {
 	char author[12];
@@ -26,14 +31,14 @@ struct record {
 };
 
 struct BtreeNode {
-	int val[MAX + 1];
+	record* val[MAX + 1];
 	int count;
 	BtreeNode* link[MAX + 1];
 };
 
 struct codeShennon {
-	int symbol;
-	double frequency;
+	char symbol;
+	long double probality;
 };
 
 namespace saod {
@@ -57,33 +62,27 @@ namespace saod {
 }
 void OpenDatabase(std::string filename, std::fstream& file);
 void ReadDatabase(std::fstream& file, std::vector<record>& vector);
+
 void QuickSortStruct(std::vector<record*>& indexArray, int left, int right);
+void QuickSortStruct(codeShennon* symbolFrequency, int left, int right);
 int Compare(record * record1, record * record2);
+
 void PrintDatabase(std::vector<record*> index);
 void PrintDatabase(std::vector<record> record);
+
 int bin_search(std::vector<record*> ind, char* key, int min, int max);
 int BinCompare(char* key, char* title);
 
-/* creating new node */
-BtreeNode* createNode(int val, BtreeNode* child);
-/* Places the value in appropriate position */
-void addValToNode(int val, int pos, BtreeNode* node, BtreeNode* child);
-
-/* split the node */
-void splitNode(int val, int* pval, int pos, BtreeNode* node, BtreeNode* child,
-	BtreeNode** newNode);
-
-/* sets the value val in the node */
-int setValueInNode(int val, int* pval, BtreeNode* node, BtreeNode** child);
-
-/* insert val in B-Tree */
-void insertion(int val);
-
-/* B-Tree Traversal */
+BtreeNode* createNode(record* val, BtreeNode* child);
+void addValToNode(record* val, int pos, BtreeNode* node, BtreeNode* child);
+void splitNode(record* val, record** pval, int pos, BtreeNode* node, BtreeNode* child, BtreeNode** newNode);
+int setValueInNode(record* val, record** pval, BtreeNode* node, BtreeNode** child);
+void insertion(record* val);
 void traversal();
 void traversal(BtreeNode* MyNode);
-int search(BtreeNode* myNode, int data);
-void search(int data);
 
-codeShennon* symbolFrequency(codeShennon* symbolFreq, int size, int counter, int* freq);
+void search(BtreeNode* myNode, int data, saod::queue q);
+void search(int data, saod::queue q);
 
+void Shennon();
+void CodeShennonCreate(codeShennon* symbolFrequency, int codePresent);

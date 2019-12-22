@@ -118,7 +118,7 @@ void PrintDatabase(std::vector<record> record) {
 	std::cin >> choice;
 	int counter = 1;
 	for (int i = 0; i < record.size(); i++) {
-		std::cout << i  << ".| "
+		std::cout << i << ".| "
 			<< record[i].author << "  |  "
 			<< record[i].title << "  |  "
 			<< record[i].publisher << "  |  "
@@ -318,7 +318,7 @@ bool saod::queue::isFull()
 }
 
 /* creating new node */
-BtreeNode* createNode(int val, BtreeNode* child) {
+BtreeNode* createNode(record* val, BtreeNode * child) {
 	BtreeNode* newNode = new BtreeNode;
 	newNode->val[1] = val;
 	newNode->count = 1;
@@ -327,7 +327,7 @@ BtreeNode* createNode(int val, BtreeNode* child) {
 	return newNode;
 }
 /* Places the value in appropriate position */
-void addValToNode(int val, int pos, BtreeNode* node, BtreeNode* child) {
+void addValToNode(record* val, int pos, BtreeNode * node, BtreeNode * child) {
 	int j = node->count;
 	while (j > pos) {
 		node->val[j + 1] = node->val[j];
@@ -339,14 +339,16 @@ void addValToNode(int val, int pos, BtreeNode* node, BtreeNode* child) {
 	node->count++;
 }
 /* split the node */
-void splitNode(int val, int* pval, int pos, BtreeNode* node, BtreeNode* child,
-	BtreeNode** newNode) {
+void splitNode(record* val, record** pval, int pos, BtreeNode * node, BtreeNode * child,
+	BtreeNode * *newNode) {
 	int median, j;
 
-	if (pos > MIN)
+	if (pos > MIN) {
 		median = MIN + 1;
-	else
+	}
+	else {
 		median = MIN;
+	}
 
 	*newNode = new BtreeNode;
 	j = median + 1;
@@ -369,7 +371,7 @@ void splitNode(int val, int* pval, int pos, BtreeNode* node, BtreeNode* child,
 	node->count--;
 }
 /* sets the value val in the node */
-int setValueInNode(int val, int* pval, BtreeNode* node, BtreeNode** child) {
+int setValueInNode(record* val, record** pval, BtreeNode * node, BtreeNode * *child) {
 	int pos;
 	if (!node) {
 		*pval = val;
@@ -377,16 +379,12 @@ int setValueInNode(int val, int* pval, BtreeNode* node, BtreeNode** child) {
 		return 1;
 	}
 
-	if (val < node->val[1]) {
+	if (val->year < node->val[1]->year) {
 		pos = 0;
 	}
 	else {
-		for (pos = node->count; (val < node->val[pos] && pos > 1); pos--)
+		for (pos = node->count; (val->year < node->val[pos]->year && pos > 1); pos--)
 			;
-/*		if (val == node->val[pos]) {
-			std::cout << "Duplicates not allowed\n";
-			return 0;
-		}*/
 	}
 	if (setValueInNode(val, pval, node->link[pos], child)) {
 		if (node->count < MAX) {
@@ -400,8 +398,9 @@ int setValueInNode(int val, int* pval, BtreeNode* node, BtreeNode** child) {
 	return 0;
 }
 /* insert val in B-Tree */
-void insertion(int val) {
-	int flag, i;
+void insertion(record* val) {
+	int flag;
+	record* i;
 	BtreeNode* child;
 
 	flag = setValueInNode(val, &i, root, &child);
@@ -414,190 +413,161 @@ void traversal() {
 /* B-Tree Traversal */
 int it = 0;
 
-void traversal(BtreeNode* myNode) {
+void traversal(BtreeNode * myNode) {
 	int i;
 	if (myNode) {
 		for (i = 0; i < myNode->count; i++) {
 			traversal(myNode->link[i]);
-			std::cout << it << " " << myNode->val[i + 1] << " \n";
+			std::cout << it << " " << myNode->val[i + 1]->year << " \n";
 			it++;
 		}
 		traversal(myNode->link[i]);
 	}
 }
-
-int search(BtreeNode* myNode, int data)
+void search(int data, saod::queue q) {
+	search(root, data, q);
+}
+void search(BtreeNode* myNode, int data, saod::queue q)
 {
-	if (myNode == NULL) {
-		return -1;
-	}
-	if (data < myNode->val[0]) {
-		return search(myNode->link[0], data);
-	}
-	else if(data < myNode->val[1]){
-		return search(myNode->link[1], data);
-	}
-	else if (data > myNode->val[1]) {
-		return search(myNode->link[2], data);
-	}
-	else {
-		if (myNode->val[0] == data) {
-			return myNode->val[0];
+	int i;
+	if (myNode) {
+		for (i = 0; i < myNode->count; i++) {
+			search(myNode->link[i], data, q);
+			if (data == myNode->val[i + 1]->year) {
+				q.add(myNode->val[i + 1]);
+			}
+			it++;
 		}
-		else if (myNode->val[1] == data) {
-			return myNode->val[1];
+		search(myNode->link[i], data, q);
+	}
+}
+
+void Shennon() {
+	FILE* file = fopen("D:\\testBase1.dat", "rb");
+
+	codeShennon* symbolProbality = new codeShennon[size_code];
+	
+	int* repeat = new int[size_code];//массив всех повторений каких либо сиволов
+
+	for (int i = 0; i < size_code; i++) {
+		repeat[i] = 0;
+	}
+
+	int countPresent = 0;//количетсво символов в базе
+	int count = 0;//общее количество символов в базе
+
+	unsigned char ch;//считываемый символ
+
+	while (!feof(file)) {
+		ch = getc(file);
+		
+		if (ch != -1) { 
+			repeat[(int)ch]++; // Сколько повторов символа в БД
+		} 
+		if (repeat[(int)ch] == 1) {
+			countPresent++;  // Количество символов без повторов                
 		}
-		else return -1;
 	}
-}
 
-/*ЗАПОЛНЕНИЕ МАССИВА ВЕРОЯТНОСТЕЙ*/
-codeShennon* symbolFrequency(codeShennon* symbolFreq, int size, int counter, int* freq) {
-	double s = 0;
-	for (int i = 0; i < size; i++) {
-		symbolFreq[i].symbol = i;
-		symbolFreq[i].frequency = (double)freq[i] / counter;
-		std::cout << symbolFreq[i].frequency;
+	fclose(file);
+	
+	for (int i = 0; i < size_code; i++) {
+		count += repeat[i];
 	}
-	return symbolFreq;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void search(int data) {
-	//return search(root, data);
-	for (int i = 0; i < rand()%(34-7)+7; i++) {
-		std::cout << data << std::endl;
+	//std::cout << std::endl << repeat[i] << std::endl;
+	for (int i = 0, j = 0; i < size_code; i++) {
+		if (repeat[i] != 0) {
+			symbolProbality[j].symbol = i;
+			symbolProbality[j].probality = (double)repeat[i] / (double)count;
+			j++;
+		}
 	}
+
+	double entr = 0;//энтропия
+	for (int i = 0; i < size_code; i++) {
+		entr += symbolProbality[i].probality * log2(symbolProbality[i].probality);
+		std::cout << symbolProbality[i].probality << " " << i << '\n';
+	}
+	entr = -entr;
+	std::cout << "Entropy: " << entr << std::endl;
+	QuickSortStruct(symbolProbality, 0, size_code);
+	std::cout << std::endl;
+	CodeShennonCreate(symbolProbality, countPresent);
 }
+void CodeShennonCreate(codeShennon* symbolProbality, int codePresent) {
+	double *SumProbality = new double[codePresent];//Нарастающие суммы вероятностей
+	double MidLenght = 0;
 
+	int* Lenght = new int[codePresent];//длина кодовых слов
 
+	int** CodeMatrix = new int* [codePresent];//Матрица кодов
+	for (int i = 1; i <= codePresent; i++) {
+		CodeMatrix[i] = new int[codePresent];
+	}
 
+	for (int i = 1; i <= codePresent; i++) {
+		for (int j = 1; j <= codePresent; j++) {
+			CodeMatrix[i][j] = 0;
+		}
+	}
 
+	double* BuffProbality = new double[codePresent];//Хранение массива вероятностей
 
+	for (int i = 1; i <= codePresent; i++) {
+		BuffProbality[i] = symbolProbality[i - 1].probality;
+	}
 
+	SumProbality[0] = 0; BuffProbality[0] = 0;
+	for (int i = 1; i <= codePresent; i++) {
+		SumProbality[i] = SumProbality[i - 1] + BuffProbality[i];
+		Lenght[i] = -log2(BuffProbality[i]);
+	}
+	for (int i = 1; i <= codePresent; i++) {
+		for (int j = 1; j <= Lenght[i]; j++) {
+			SumProbality[i - 1] *= 2;
+			CodeMatrix[i][j] = floor(SumProbality[i - 1]);
+			while (SumProbality[i - 1] > 1) {
+				SumProbality[i - 1] -= 1;
+			}
+		}
+	}
 
+	std::cout << std::setw(8) << std::left << "SYMBOL"
+		<< std::setw(14) << "PROBALITY"
+		<< std::setw(8) << "LENGHT"
+		<< std::setw(10) << "CODEWORD"
+		<< std::endl;
 
+	for (int i = 1; i <= codePresent; i++) {
+		std::cout << std::setw(8) << (int)symbolProbality[i - 1].symbol <<
+		std::setw(14) << BuffProbality[i] << std::setw(8) << Lenght[i];
+		for (int j = 1; j <= Lenght[i]; j++) {
+			std::cout << CodeMatrix[i][j];
+		}
+		std::cout << std::endl;
+		MidLenght += Lenght[i] * BuffProbality[i];
+	}
+	std::cout << "\nMid Lenght = " << MidLenght << std::endl;
+}
+void QuickSortStruct(codeShennon * symbolProbality, int left, int right)
+{
+	register int i, j;
+	double x;
+	codeShennon temp;
 
+	i = left; j = right;
+	x = symbolProbality[(left + right) / 2].probality;
+	do {
+		while ((symbolProbality[i].probality > x) && (i < right)) i++;
+		while ((symbolProbality[j].probality < x) && (j > left)) j--;
+		if (i <= j) {
+			temp = symbolProbality[i];
+			symbolProbality[i] = symbolProbality[j];
+			symbolProbality[j] = temp;
+			i++; j--;
+		}
+	} while (i <= j);
 
-
-
-
+	if (left < j) QuickSortStruct(symbolProbality, left, j);
+	if (i < right) QuickSortStruct(symbolProbality, i, right);
+}

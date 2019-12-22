@@ -8,8 +8,7 @@ int main()
 {
 	/*найти настрйоку принимающую старую кодировку*/
 	fstream file;
-	const string databaseName = "D:\\testBase1.dat";
-	const int size = 256;
+
 	cout << "Welcome.\n";
 	cout << "This is the course work of a 2 - year student Mark Belousov\n";
 	cout << "on the subject of Structure and Data Processing Algorithms\n\n";
@@ -20,6 +19,7 @@ int main()
 		cout << e.what() << endl;
 		exit(1);
 	}
+
 	vector<record> recordArray;
 	ReadDatabase(file, recordArray);
 	file.close();
@@ -29,24 +29,22 @@ int main()
 	}
 	QuickSortStruct(indexArray, 0, indexArray.size() - 1);
 	int answer;
+
 	while (true) {
 		cout << "1. Not sorted database\n";
 		cout << "2. Sorted QuickSort database\n";
-		cout << "3. BinSearch\n\n";
-		cout << "4. Exit\n";
+		cout << "3. BinSearch\n";
+		cout << "4. Shannon coding\n\n";
+		cout << "5. Exit\n";
 		cout << "Answer: ";
 		cin >> answer;
 		switch (answer) {
 		case 1: {
-			system("CLS");
 			PrintDatabase(recordArray);
-			system("CLS");
 			break;
 		}
 		case 2: {
-			//	system("CLS");
 			PrintDatabase(indexArray);
-			//	system("CLS");
 			break;
 		}
 		case 3: {
@@ -68,7 +66,7 @@ int main()
 				else if ((BinCompare(key, indexArray[beginSearchRecord + 1]->title) == 0)) {
 					cout << i << " ";
 					QueueRecord.add(indexArray[beginSearchRecord]);
-					insertion(indexArray[beginSearchRecord]->year);
+					insertion(indexArray[beginSearchRecord]);
 					beginSearchRecord++;
 					i++;
 				}
@@ -82,36 +80,13 @@ int main()
 			cout << "Input search key in BNode: ";
 			cin >> key_search;
 			cout << endl;
-			search(key_search);
-
+			saod::queue search_succ;
+			search(key_search, search_succ);
 			break;
 		}
 		case 4: {
-			system("CLS");
 			cout << "Coding in Shenon\n";
-			double counter = 0;
-			double summary = 0;
-			unsigned char ch;
-			int* freq = new int[size];
-
-			for (int i = 0; i < size; i++) {
-				freq[i] = 0;
-			}
-			FILE* file1 = fopen(databaseName, "rb");
-			while (true) {
-				ch = fgetc(file1);
-				if (!feof(file1)) {
-					freq[ch]++;
-					counter++;
-				}
-				else {
-					break;
-				}
-			}
-			fclose(file1);
-			break;
-			codeShennon* symbolFreq = new codeShennon[size];
-			symbolFreq = symbolFrequency(symbolFreq, size, counter, freq);
+			Shennon();
 			break;
 		}
 		case 5: {
